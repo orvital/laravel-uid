@@ -1,2 +1,3 @@
-# laravel-uid
+# Laravel UID
+
 Unique identifiers for Laravel
