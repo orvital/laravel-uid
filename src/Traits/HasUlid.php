@@ -2,7 +2,6 @@
 
 namespace Orvital\Uid\Traits;
 
-use Illuminate\Database\Eloquent\Model;
 use Orvital\Uid\Ulid;
 
 /**
