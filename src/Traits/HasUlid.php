@@ -15,9 +15,20 @@ trait HasUlid
      */
     public static function bootHasUlid(): void
     {
-        static::creating(function (Model $model) {
+        static::creating(function (self $model) {
             if (!$model->getKey()) {
                 $model->{$model->getKeyName()} = new Ulid();
+            }
+        });
+
+        /**
+         * Prevent changing the model key manually by always keeping the original value.
+         * Done this way instead of using the model $guarded property as it triggers an additional database query.
+         */
+        static::saving(function (self $model) {
+            $originalKey = $model->getOriginal($model->getKeyName());
+            if ($originalKey !== $model->getKey()) {
+                $model->{$model->getKeyName()} = $originalKey;
             }
         });
     }
@@ -28,15 +39,8 @@ trait HasUlid
      */
     public function initializeHasUlid(): void
     {
-        $primaryKey = $this->getKeyName();
-
         // Set the primary key type as string and incrementing property as false.
         $this->setKeyType('string')->setIncrementing(false);
-
-        // Guard model key from mass assignment.
-        if (!$this->isGuarded($primaryKey)) {
-            $this->mergeGuarded([$primaryKey]);
-        }
     }
 
     /**
