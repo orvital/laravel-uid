@@ -16,7 +16,7 @@ trait HasUlid
     {
         static::creating(function (self $model) {
             if (!$model->getKey()) {
-                $model->{$model->getKeyName()} = new Ulid();
+                $model->{$model->getKeyName()} = Ulid::generate();
             }
         });
 
