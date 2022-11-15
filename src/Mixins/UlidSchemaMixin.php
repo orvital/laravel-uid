@@ -1,6 +1,7 @@
 <?php
 
 namespace Orvital\Uid\Mixins;
+use Illuminate\Database\Schema\ForeignIdColumnDefinition;
 
 /**
  * @mixin \Illuminate\Database\Schema\Blueprint
@@ -16,6 +17,8 @@ class UlidSchemaMixin
     {
         return function (string $column = 'id') {
             return $this->char($column, 26);
+            // return $this->addColumn('ulid', $column);
+            // return $this->addColumn('ulid', $column);
         };
     }
 
@@ -26,12 +29,21 @@ class UlidSchemaMixin
      */
     public function foreignUlid(): \Closure
     {
-        return function (string $column, string $table) {
-            $definition = $this->ulid($column);
+        // TODO refactor to match foreignId() and foreignUuid()
+        // return function (string $column, string $table) {
+        //     $definition = $this->ulid($column);
 
-            $this->foreign($column)->references('id')->on($table);
+        //     $this->foreign($column)->references('id')->on($table);
 
-            return $definition;
+        //     return $definition;
+        // };
+
+        return function (string $column) {
+            return $this->addColumnDefinition(new ForeignIdColumnDefinition($this, [
+                'type' => 'char',
+                'name' => $column,
+                'length' => 26,
+            ]));
         };
     }
 
